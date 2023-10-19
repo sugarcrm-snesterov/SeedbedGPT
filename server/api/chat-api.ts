@@ -1,18 +1,16 @@
-import { apiKey } from "../config.js";
 import { chatCompletion } from "../bot-engine.js";
 
 const api = [
   {
-    endpoint: "prompt",
+    endpoint: "completions/create",
     method: "POST",
-    handler: async (req, res) => {
-      const { prompt } = req.body;
+    handler: async (req: any, res: any) => {
       let error;
       let data;
 
-      if (prompt) {
+      if (req.body) {
         try {
-          data = await chatCompletion({ prompt });
+          data = await chatCompletion(req.body);
         } catch (e) {
           console.log(e);
           error = e;

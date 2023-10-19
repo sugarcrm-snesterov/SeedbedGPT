@@ -3,6 +3,8 @@ import { BotQuery, BotRawResponse } from "./types"
 import type { BaseQueryFn } from "@reduxjs/toolkit/query"
 import OpenAI from "openai"
 import { ChatCompletionCreateParams } from "openai/resources/chat/index"
+import { selectTemperature, selectModel } from "../settings/settings-slice"
+import { store } from "../../app/store"
 
 const remoteBotProvider = () => {
   return fetchBaseQuery({
@@ -34,8 +36,8 @@ const localBotProvider = () => {
       try {
         const chatCompletion = await openai.chat[method][api]({
           messages: body.messages,
-          model: "gpt-3.5-turbo",
-          temperature: 0,
+          model: selectModel(store.getState()),
+          temperature: selectTemperature(store.getState()),
         })
 
         return { data: chatCompletion }

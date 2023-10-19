@@ -15,7 +15,7 @@ app.use(expressStatic(staticPath));
 app.use("/api", router);
 
 for (const { method, endpoint, handler } of api) {
-  router[method.toLowerCase()](`/${endpoint}`, [handler]);
+  router[method.toLowerCase() as "get" | "post"](`/${endpoint}`, [handler]);
   console.log(`Added "${method.toUpperCase()}:${endpoint}" endpoint`);
 }
 
