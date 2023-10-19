@@ -4,7 +4,7 @@ import { useState } from "react"
 import List from "../../components/List/List"
 import Box from "@mui/material/Box"
 import ChatInput from "./ChatInput"
-import { useLazyGetPromptQuery } from "./chat-api"
+import { useLazyGetCompletionQuery } from "./chat-api"
 import { responseToDialogItem } from "./utills"
 
 export type DialogItem = {
@@ -13,7 +13,7 @@ export type DialogItem = {
 }
 
 function ChatPanel() {
-  const [triggerPrompt] = useLazyGetPromptQuery()
+  const [triggerPrompt] = useLazyGetCompletionQuery()
   const [dialog, setDialog] = useState<DialogItem[]>([])
   const [userInput, setUserInput] = useState("")
 
@@ -31,7 +31,14 @@ function ChatPanel() {
     setUserInput("")
     setDialog([...dialog, { text: value, type: "q" }])
 
-    const response = await triggerPrompt({ prompt: value })
+    const messages = [
+      {
+        role: "user",
+        content: value,
+      } as const,
+    ]
+
+    const response = await triggerPrompt({ messages })
     const answerItems = responseToDialogItem(response.data)
 
     setDialog((dialog) => [...dialog, ...answerItems])

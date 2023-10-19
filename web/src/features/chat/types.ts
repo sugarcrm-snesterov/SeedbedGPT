@@ -1,3 +1,5 @@
+import { ChatCompletionCreateParams } from "openai/resources/chat/index"
+
 export type Choice = {
   index: number
   message: {
@@ -20,6 +22,6 @@ export type BotRawResponse = {
   }
 }
 
-export type SimplePrompt = {
-  prompt: string
+export type BotQuery = {
+  messages: ChatCompletionCreateParams["messages"]
 }

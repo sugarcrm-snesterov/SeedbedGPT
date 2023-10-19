@@ -22,4 +22,7 @@ export default defineConfig({
     setupFiles: "src/setupTests",
     mockReset: true,
   },
+  define: {
+    "process.env.OPENAI_KEY": JSON.stringify(process.env.OPENAI_KEY),
+  },
 })
