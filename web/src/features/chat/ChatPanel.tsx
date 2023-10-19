@@ -50,7 +50,7 @@ function ChatPanel() {
     setDialog((dialog) => [...dialog, ...answerItems])
   }
 
-  const listItems = dialog.map((item, index) => {
+  let listItems = dialog.map((item, index) => {
     if (item.type === "q") {
       return <QuestionListItem key={index} primaryText={item.text} />
     } else {
@@ -60,7 +60,9 @@ function ChatPanel() {
 
   return (
     <Box className="chat-panel">
-      <List className="chat-list">{listItems}</List>
+      <List className="chat-list" emptyText="Start a new conversation">
+        {listItems}
+      </List>
       <ChatInput
         onSubmit={makePrompt}
         onChange={onInputChange}

@@ -35,6 +35,7 @@ const localBotProvider = () => {
         const chatCompletion = await openai.chat[method][api]({
           messages: body.messages,
           model: "gpt-3.5-turbo",
+          temperature: 0,
         })
 
         return { data: chatCompletion }
