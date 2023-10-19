@@ -23,8 +23,8 @@ function ChatInput({ value, onSubmit, onChange }: InputProps) {
         multiline={true}
         sx={{
           flexGrow: 1,
-          maxHeight: "100px",
         }}
+        maxRows={10}
         value={value}
         onChange={(e) => {
           onChange(e.target.value)

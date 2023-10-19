@@ -5,6 +5,7 @@ import Tab from "@mui/material/Tab"
 import { useState } from "react"
 import ChatPanel from "./features/chat/ChatPanel"
 import TabPanel from "./components/TabPanel"
+import SettingsPanel from "./features/settings/SettingsPanel"
 
 function App() {
   const [value, setValue] = useState(0)
@@ -26,7 +27,7 @@ function App() {
           <ChatPanel />
         </TabPanel>
         <TabPanel value={value} index={1}>
-          Settings here
+          <SettingsPanel />
         </TabPanel>
       </Box>
     </Container>

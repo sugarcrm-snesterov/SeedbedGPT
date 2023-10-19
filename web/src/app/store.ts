@@ -1,8 +1,10 @@
 import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit"
+import chatSettingsReducer from "../features/settings/settings-slice"
 import { chatApi } from "../features/chat/chat-api"
 
 export const store = configureStore({
   reducer: {
+    settings: chatSettingsReducer,
     [chatApi.reducerPath]: chatApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {

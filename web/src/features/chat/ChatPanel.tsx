@@ -1,11 +1,12 @@
+import { useState } from "react"
+import Box from "@mui/material/Box"
+import List from "../../components/List/List"
 import AnswerListItem from "../../components/List/BotAnswerListItem"
 import QuestionListItem from "../../components/List/UserQuestionListItem"
-import { useState } from "react"
-import List from "../../components/List/List"
-import Box from "@mui/material/Box"
 import ChatInput from "./ChatInput"
 import { useLazyGetCompletionQuery } from "./chat-api"
 import { responseToDialogItem } from "./utills"
+import { useAppSelector } from "../../app/hooks"
 
 export type DialogItem = {
   text: string
@@ -16,6 +17,7 @@ function ChatPanel() {
   const [triggerPrompt] = useLazyGetCompletionQuery()
   const [dialog, setDialog] = useState<DialogItem[]>([])
   const [userInput, setUserInput] = useState("")
+  const systemRole = useAppSelector((state) => state.settings.systemRole)
 
   const onInputChange = (value: string) => {
     setUserInput(value)
@@ -32,6 +34,10 @@ function ChatPanel() {
     setDialog([...dialog, { text: value, type: "q" }])
 
     const messages = [
+      {
+        role: "system",
+        content: systemRole,
+      } as const,
       {
         role: "user",
         content: value,
