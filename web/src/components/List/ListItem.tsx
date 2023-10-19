@@ -11,14 +11,16 @@ import FormGroup from "@mui/material/FormGroup"
 import FormControlLabel from "@mui/material/FormControlLabel"
 import BotAvatar from "../Icons/BotAvatar"
 
-type ListItemProps = {
+type ListItemProps = React.PropsWithChildren<{
   primaryText: string
   icon?: React.FC
-} & BaseListItemProps
+}> &
+  BaseListItemProps
 
 function ListItem(props: ListItemProps) {
   const { primaryText, icon, ...rest } = props
   const IconEl = icon || null
+  const { children } = props
 
   return (
     <BaseListItem {...rest} className="list-item">
@@ -29,8 +31,8 @@ function ListItem(props: ListItemProps) {
           </Avatar>
         </ListItemAvatar>
       )}
-
-      <ListItemText primary={primaryText} />
+      {children}
+      {!children && <ListItemText primary={primaryText} />}
     </BaseListItem>
   )
 }

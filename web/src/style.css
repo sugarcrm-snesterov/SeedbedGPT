@@ -39,6 +39,6 @@ body {
 
 .list-item {
   max-width: 90%;
-  background-color: #f5f5f5;
+  background-color: rgb(240, 240, 240);
   border-radius: 20px;
 }
