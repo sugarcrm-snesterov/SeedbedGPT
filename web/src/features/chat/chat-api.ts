@@ -2,9 +2,19 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import { BotQuery, BotRawResponse } from "./types"
 import type { BaseQueryFn } from "@reduxjs/toolkit/query"
 import OpenAI from "openai"
-import { ChatCompletionCreateParams } from "openai/resources/chat/index"
-import { selectTemperature, selectModel } from "../settings/settings-slice"
-import { store } from "../../app/store"
+import {
+  ChatCompletionCreateParamsNonStreaming,
+  ChatCompletionMessageParam,
+} from "openai/resources/chat/index"
+import {
+  selectTemperature,
+  selectModel,
+  selectSystemRole,
+  selectTrainingDialog,
+  selectIncludeHistory,
+} from "../settings/settings-slice"
+import { type RootState } from "../../app/store"
+import { selectDialog } from "./chat-slice"
 
 const remoteBotProvider = () => {
   return fetchBaseQuery({
@@ -20,12 +30,10 @@ const localBotProvider = () => {
   })
 
   const botBaseQuery =
-    (
-      { baseUrl }: { baseUrl: string } = { baseUrl: "" },
-    ): BaseQueryFn<
+    (): BaseQueryFn<
       {
         url: string
-        body: BotQuery
+        body: ChatCompletionCreateParamsNonStreaming
       },
       unknown,
       unknown
@@ -34,11 +42,7 @@ const localBotProvider = () => {
       const [method, api] = url.split("/") as ["completions", "create"]
 
       try {
-        const chatCompletion = await openai.chat[method][api]({
-          messages: body.messages,
-          model: selectModel(store.getState()),
-          temperature: selectTemperature(store.getState()),
-        })
+        const chatCompletion = await openai.chat[method][api](body)
 
         return { data: chatCompletion }
       } catch (error: unknown) {
@@ -56,13 +60,76 @@ const localBotProvider = () => {
 
 export const chatApi = createApi({
   reducerPath: "chatApi",
-  baseQuery: localBotProvider(),
+  baseQuery: remoteBotProvider(),
   endpoints: (builder) => ({
     getCompletion: builder.query<BotRawResponse, BotQuery>({
-      query: (body) => ({
-        url: "completions/create",
-        body,
-      }),
+      queryFn(data, api, options, baseQuery) {
+        const state = api.getState() as RootState
+
+        const chatMessages: ChatCompletionMessageParam[] = []
+
+        const systemRole = selectSystemRole(state)
+        const model = selectModel(state)
+        const temperature = selectTemperature(state)
+        const trainingDialog = selectTrainingDialog(state)
+        const includeHistory = selectIncludeHistory(state)
+
+        // adding system role message from settings
+        if (systemRole) {
+          chatMessages.push({
+            role: "system",
+            content: systemRole,
+          } as const)
+        }
+
+        // adding training dialog messages from settings
+        if (trainingDialog) {
+          try {
+            const items = JSON.parse(
+              trainingDialog,
+            ) as ChatCompletionMessageParam[]
+            chatMessages.push(...items)
+          } catch (e) {
+            console.log("Training dialog is not valid JSON")
+          }
+        }
+
+        // adding chat history message if checked in settings
+        if (includeHistory) {
+          const dialog = selectDialog(state)
+
+          dialog.forEach((dialogItem) => {
+            const isBot = dialogItem.type === "a"
+
+            if (isBot && !dialogItem.rawAnswer) {
+              return
+            }
+
+            const botAnswer = isBot
+              ? dialogItem.rawAnswer?.choices[0].message
+              : null
+            const content = isBot ? botAnswer?.content : dialogItem.text
+            const role = isBot ? botAnswer?.role || "assistant" : "user"
+
+            if (content) {
+              chatMessages.push({ role, content })
+            }
+          })
+        }
+
+        chatMessages.push(...data.messages)
+
+        const payload: ChatCompletionCreateParamsNonStreaming = {
+          messages: chatMessages,
+          model,
+          temperature,
+        }
+
+        return baseQuery({
+          url: "completions/create",
+          body: payload,
+        }) as { data: BotRawResponse }
+      },
     }),
   }),
 })

@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Box from "@mui/material/Box"
 import List from "../../components/List/List"
 import AnswerListItem from "../../components/List/BotAnswerListItem"
@@ -6,48 +6,56 @@ import QuestionListItem from "../../components/List/UserQuestionListItem"
 import ChatInput from "./ChatInput"
 import { useLazyGetCompletionQuery } from "./chat-api"
 import { responseToDialogItem } from "./utills"
-import { useAppSelector } from "../../app/hooks"
+import { useAppSelector, useAppDispatch } from "../../app/hooks"
+import { addDialogItem, selectDialog, setDialog } from "./chat-slice"
+import type { OpenAI } from "openai"
 
 export type DialogItem = {
   text: string
   type: "q" | "a"
+  rawAnswer?: OpenAI.Chat.Completions.ChatCompletion
 }
 
 function ChatPanel() {
+  const dispatch = useAppDispatch()
   const [triggerPrompt] = useLazyGetCompletionQuery()
-  const [dialog, setDialog] = useState<DialogItem[]>([])
+  const dialog = useAppSelector(selectDialog)
   const [userInput, setUserInput] = useState("")
-  const systemRole = useAppSelector((state) => state.settings.systemRole)
 
   const onInputChange = (value: string) => {
     setUserInput(value)
   }
 
+  const clearDialog = () => {
+    dispatch(setDialog([]))
+  }
+
+  useEffect(() => {
+    document.querySelector(".chat-list")?.scrollTo(0, 999999)
+  }, [dialog])
+
   const makePrompt = async () => {
     const value = userInput.trim()
 
-    if (!userInput) {
+    if (!value) {
       return
     }
 
     setUserInput("")
-    setDialog([...dialog, { text: value, type: "q" }])
-
-    const messages = [
-      {
-        role: "system",
-        content: systemRole,
-      } as const,
-      {
-        role: "user",
-        content: value,
-      } as const,
-    ]
-
-    const response = await triggerPrompt({ messages })
+    const loading = triggerPrompt({
+      messages: [
+        {
+          role: "user",
+          content: value,
+        },
+      ],
+    })
+    // if the history should be included we must include it after the request to prevent duplications
+    dispatch(addDialogItem([{ text: value, type: "q" }]))
+    const response = await loading
     const answerItems = responseToDialogItem(response.data)
 
-    setDialog((dialog) => [...dialog, ...answerItems])
+    dispatch(addDialogItem(answerItems))
   }
 
   let listItems = dialog.map((item, index) => {
@@ -66,6 +74,7 @@ function ChatPanel() {
       <ChatInput
         onSubmit={makePrompt}
         onChange={onInputChange}
+        onClear={() => clearDialog()}
         value={userInput}
       />
     </Box>

@@ -1,17 +1,37 @@
 import Stack from "@mui/material/Stack"
 import TextField from "@mui/material/TextField"
-import Button from "@mui/material/Button"
+import SubmitButton from "./SubmitButton"
 
 type InputProps = {
   onSubmit: () => void
   onChange: (value: string) => void
+  onClear: () => void
   value: string
 }
 
-function ChatInput({ value, onSubmit, onChange }: InputProps) {
+const actions = [
+  {
+    name: "send", // main action
+    label: "Send",
+  },
+  {
+    name: "clear",
+    label: "Clear",
+  },
+]
+
+function ChatInput({ value, onSubmit, onChange, onClear }: InputProps) {
   const onKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if ((e.metaKey || e.ctrlKey) && e.code === "Enter") {
       onSubmit()
+    }
+  }
+
+  const onButtonClick = (action: string) => {
+    if (action === "send") {
+      onSubmit()
+    } else if (action === "clear") {
+      onClear()
     }
   }
 
@@ -31,9 +51,7 @@ function ChatInput({ value, onSubmit, onChange }: InputProps) {
         }}
         onKeyDown={onKeyUp}
       />
-      <Button variant="contained" onClick={() => onSubmit()}>
-        Send
-      </Button>
+      <SubmitButton onAction={onButtonClick} options={actions} />
     </Stack>
   )
 }

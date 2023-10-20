@@ -1,29 +1,72 @@
 import Stack from "@mui/material/Stack"
 import TextField from "@mui/material/TextField"
+import Button from "@mui/material/Button"
+import FormControlLabel from "@mui/material/FormControlLabel"
+import Checkbox from "@mui/material/Checkbox"
+
 import { useAppSelector, useAppDispatch } from "../../app/hooks"
-import { setSystemRole, setTemperature, setModel } from "./settings-slice"
+import {
+  setSystemRole,
+  setTemperature,
+  setModel,
+  setTrainingDialog,
+  setIncludeHistory,
+  resetSettings,
+} from "./settings-slice"
 
 const nameActionMap = {
   systemRole: setSystemRole,
   model: setModel,
   temperature: setTemperature,
+  trainingDialog: setTrainingDialog,
+  includeHistory: setIncludeHistory,
 }
 
 function SettingsPanel() {
   const systemRole = useAppSelector((state) => state.settings.systemRole)
   const model = useAppSelector((state) => state.settings.model)
   const temperature = useAppSelector((state) => state.settings.temperature)
+  const trainingDialog = useAppSelector(
+    (state) => state.settings.trainingDialog,
+  )
+  const selectIncludeHistory = useAppSelector(
+    (state) => state.settings.includeHistory,
+  )
+
   const dispatch = useAppDispatch()
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target
-
     const action = nameActionMap[name as keyof typeof nameActionMap]
-    dispatch(
-      action.type === "chat/setTemperature"
-        ? action(Number(value))
-        : action(value),
-    )
+
+    switch (action.type) {
+      case "chat/setTemperature":
+        return dispatch(action(Number(value)))
+      case "chat/setIncludeHistory":
+        return dispatch(action(event.target.checked))
+      default:
+        return dispatch(action(value.trim()))
+    }
+  }
+
+  const onResetClick = () => {
+    dispatch(resetSettings())
+  }
+
+  const validateTrainingDialog = (
+    event: React.FocusEvent<HTMLInputElement>,
+  ) => {
+    const { value } = event.target
+
+    if (!value) {
+      return
+    }
+
+    try {
+      JSON.parse(value.trim())
+    } catch (e) {
+      alert("Invalid JSON in training dialog")
+    }
   }
 
   return (
@@ -36,6 +79,16 @@ function SettingsPanel() {
         rows={3}
         value={systemRole}
         onChange={onChange}
+      />
+      <TextField
+        name="trainingDialog"
+        autoComplete="off"
+        label="Training Dialog"
+        multiline={true}
+        rows={3}
+        value={trainingDialog}
+        onChange={onChange}
+        onBlur={validateTrainingDialog}
       />
       <TextField
         name="model"
@@ -58,6 +111,19 @@ function SettingsPanel() {
         }}
         onChange={onChange}
       />
+      <FormControlLabel
+        control={
+          <Checkbox
+            checked={selectIncludeHistory}
+            onChange={onChange}
+            name="includeHistory"
+          />
+        }
+        label="Include dialog history"
+      />
+      <Button variant="outlined" onClick={() => onResetClick()}>
+        Reset to defaults
+      </Button>
     </Stack>
   )
 }

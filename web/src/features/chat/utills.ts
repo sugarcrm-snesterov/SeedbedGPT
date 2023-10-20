@@ -13,7 +13,8 @@ export const responseToDialogItem = (
   response.choices.forEach((choice) => {
     result.push({
       type: "a",
-      text: choice.message.content,
+      text: choice.message.content ?? "",
+      rawAnswer: response,
     })
   })
 

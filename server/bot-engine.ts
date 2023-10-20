@@ -1,22 +1,22 @@
 import OpenAI from "openai";
 import { apiKey } from "./config.js";
-import { ChatCompletionCreateParams } from "openai/resources/chat/index";
+import { ChatCompletionCreateParamsNonStreaming } from "openai/resources/chat/index";
 
 const openai = new OpenAI({
   apiKey,
 });
 
-export const chatCompletion = async (data: {
-  messages: ChatCompletionCreateParams["messages"];
-}) => {
-  console.log(data.messages);
-  const chatCompletion = await openai.chat.completions.create({
-    messages: data.messages,
+export const chatCompletion = async (
+  data: ChatCompletionCreateParamsNonStreaming
+) => {
+  const payload: ChatCompletionCreateParamsNonStreaming = {
     model: "gpt-3.5-turbo",
     temperature: 0,
-  });
+    ...data,
+  };
+  const chatCompletion = await openai.chat.completions.create(payload);
 
-  //   console.log("bot says " + JSON.stringify(chatCompletion));
+  console.log("bot says " + JSON.stringify(chatCompletion.choices[0]));
 
   return chatCompletion;
 };
