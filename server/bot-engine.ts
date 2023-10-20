@@ -1,5 +1,5 @@
 import OpenAI from "openai";
-import { apiKey } from "./config.js";
+import { apiKey } from "./config";
 import { ChatCompletionCreateParamsNonStreaming } from "openai/resources/chat/index";
 
 const openai = new OpenAI({

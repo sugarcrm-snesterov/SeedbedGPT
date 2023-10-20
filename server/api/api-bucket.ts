@@ -1,4 +1,4 @@
-import botApi from "./chat-api.js";
+import botApi from "./chat-api";
 
 const api = [...botApi];
 

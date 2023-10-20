@@ -12,7 +12,7 @@ function QuestionListItem(props: Parameters<typeof ListItem>[0]) {
         flexDirection: "row-reverse",
       }}
     >
-      <pre>
+      <pre className="list-item-pre">
         <ListItemText primary={props.primaryText} />
       </pre>
     </ListItem>

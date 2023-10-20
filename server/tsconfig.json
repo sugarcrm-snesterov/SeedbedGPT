@@ -13,5 +13,9 @@
       "*": ["node_modules/*", "src/types/*"]
     }
   },
-  "include": ["./**/*"]
+  "include": ["./**/*"],
+  "ts-node": {
+    "esm": true,
+    "experimentalSpecifierResolution": "node"
+  }
 }

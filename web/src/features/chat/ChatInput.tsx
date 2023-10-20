@@ -16,7 +16,7 @@ const actions = [
   },
   {
     name: "clear",
-    label: "Clear",
+    label: "Clear History",
   },
 ]
 

@@ -1,8 +1,8 @@
 import express, { Router, json, static as expressStatic } from "express";
 import { fileURLToPath } from "url";
 import { join, dirname, resolve } from "path";
-import api from "./api/api-bucket.js";
-import { port, webPath } from "./config.js";
+import api from "./api/api-bucket";
+import { port, webPath } from "./config";
 
 const getDirname = () => resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const DIR_NAME = getDirname();

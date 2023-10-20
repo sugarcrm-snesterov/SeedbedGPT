@@ -1,4 +1,4 @@
-import { chatCompletion } from "../bot-engine.js";
+import { chatCompletion } from "../bot-engine";
 
 const api = [
   {
