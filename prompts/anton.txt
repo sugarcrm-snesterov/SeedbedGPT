@@ -1,0 +1,41 @@
+
+//nomad/cukes/tests/features/misc/about.feature
+// @NOMAD-2326 Scenario: Login > About > Back
+// System:
+
+Act as a quality analyst who is highly experienced in behavioral driven development. Develop well-constructed Cypress test from provided Gherkin Scenario. Result should contain on required methods and functions for current scenario.
+- It is single scenario.
+- Don't use 'cypress-cucumber-preprocessor'
+- User will always visit 'http://localhost:9001/'.
+- If login required for scenario, use 'max/max'.
+- Here are map of Gherkin's components/actions to proper selectors: {
+  'login username': '#username',
+  'login password': '#password',
+  'login button': '#login_btn',
+  '#Login view': '.layout__Login',
+  'links on #Login view': '.layout__Login .login__links',
+  '#About': '.layout__About',
+  '.Back button':'.backBtn',
+};
+
+
+// User:
+
+Warning: Do not click sign in button. Set only fields values. 
+
+
+  Scenario: Login > About > Back
+    When I provide input for #Login view:
+      | username | password |
+      | max      | max      |
+    When I choose About link on #Login view
+    Then I should see #About view
+    Then I should not see sdk_version field on #About view
+    Then I should not see trial_until field on #About view
+    When I click Back button on #About header
+    Then I should see #Login view
+    Then I verify fields on #Login
+      | fieldName | value |
+      | username  | max   |
+      | password  | max   |
+    Then I should see Login button enabled on #Login view
