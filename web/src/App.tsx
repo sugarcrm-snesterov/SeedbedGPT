@@ -1,36 +1,146 @@
-import Container from "@mui/material/Container"
-import Box from "@mui/material/Box"
-import Tabs from "@mui/material/Tabs"
-import Tab from "@mui/material/Tab"
+import { Routes, Route, Outlet, Link } from "react-router-dom"
 import { useState } from "react"
-import ChatPanel from "./features/chat/ChatPanel"
-import TabPanel from "./components/TabPanel"
-import SettingsPanel from "./features/settings/SettingsPanel"
 
-function App() {
-  const [value, setValue] = useState(0)
+import Container from "@mui/material/Container"
 
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue)
+import AppBar from "@mui/material/AppBar"
+import Box from "@mui/material/Box"
+import Button from "@mui/material/Button"
+import MenuItem from "@mui/material/MenuItem"
+import Toolbar from "@mui/material/Toolbar"
+import IconButton from "@mui/material/IconButton"
+import Typography from "@mui/material/Typography"
+import Menu from "@mui/material/Menu"
+import MenuIcon from "@mui/icons-material/Menu"
+
+import Chat from "./features/chat/ChatPanel"
+import Settings from "./features/settings/SettingsPanel"
+import Jobs from "./features/jobs/Jobs"
+import Job from "./features/jobs/Job"
+import { NewJob } from "./features/jobs/NewJob"
+
+const PAGES = ["chat", "settings", "jobs"]
+
+const Layout = () => {
+  const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null)
+  const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null)
+
+  const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElNav(event.currentTarget)
+  }
+  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElUser(event.currentTarget)
+  }
+
+  const handleCloseNavMenu = () => {
+    setAnchorElNav(null)
+  }
+
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null)
   }
 
   return (
     <Container className="app">
-      <Box className="tab-container">
-        <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-          <Tabs value={value} onChange={handleChange}>
-            <Tab label="Chat" />
-            <Tab label="Settings" />
-          </Tabs>
-        </Box>
-        <TabPanel value={value} index={0}>
-          <ChatPanel />
-        </TabPanel>
-        <TabPanel value={value} index={1}>
-          <SettingsPanel />
-        </TabPanel>
-      </Box>
+      {/* A "layout route" is a good place to put markup you want to
+        share across all the pages on your site, like navigation. */}
+      <AppBar position="static">
+        <Container maxWidth="xl">
+          <Toolbar disableGutters>
+            <Typography
+              variant="h6"
+              noWrap
+              component="a"
+              href="#app-bar-with-responsive-menu"
+              sx={{
+                mr: 2,
+                display: { xs: "none", md: "flex" },
+                fontFamily: "monospace",
+                fontWeight: 700,
+                letterSpacing: ".3rem",
+                color: "inherit",
+                textDecoration: "none",
+              }}
+            >
+              Seedbed GPT
+            </Typography>
+
+            <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
+              <IconButton
+                size="large"
+                aria-label="account of current user"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={handleOpenNavMenu}
+                color="inherit"
+              >
+                <MenuIcon />
+              </IconButton>
+              <Menu
+                id="menu-appbar"
+                anchorEl={anchorElNav}
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "left",
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "left",
+                }}
+                open={Boolean(anchorElNav)}
+                onClose={handleCloseNavMenu}
+                sx={{
+                  display: { xs: "block", md: "none" },
+                }}
+              >
+                {PAGES.map((page) => (
+                  <MenuItem key={page} onClick={handleCloseNavMenu}>
+                    <Typography textAlign="center">
+                      <Link to={page}>{page}</Link>
+                    </Typography>
+                  </MenuItem>
+                ))}
+              </Menu>
+            </Box>
+
+            <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+              {PAGES.map((page) => (
+                <Button
+                  key={page}
+                  onClick={handleCloseNavMenu}
+                  sx={{ my: 2, color: "white", display: "block" }}
+                >
+                  <Link to={page}>{page}</Link>
+                </Button>
+              ))}
+            </Box>
+          </Toolbar>
+        </Container>
+      </AppBar>
+
+      {/* An <Outlet> renders whatever child route is currently active,
+        so you can think about this <Outlet> as a placeholder for
+        the child routes we defined above. */}
+      <Outlet />
     </Container>
+  )
+}
+
+const Page404 = () => "404"
+
+function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<Layout />}>
+        <Route index element={<Chat />} />
+        <Route path="chat" element={<Chat />} />
+        <Route path="settings" element={<Settings />} />
+        <Route path="jobs" element={<Jobs />} />
+        <Route path="job/:id" element={<Job />} />
+        <Route path="job/create" element={<NewJob />} />
+      </Route>
+    </Routes>
   )
 }
 

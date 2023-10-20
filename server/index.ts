@@ -1,5 +1,6 @@
 import express, { Router, json, static as expressStatic } from "express";
 import { fileURLToPath } from "url";
+import cors from "cors";
 import { join, dirname, resolve } from "path";
 import api from "./api/api-bucket";
 import { port, webPath } from "./config";
@@ -10,6 +11,7 @@ const staticPath = join(DIR_NAME, webPath);
 
 const app = express();
 const router = Router();
+app.use(cors())
 app.use(json());
 app.use(expressStatic(staticPath));
 app.use("/api", router);
