@@ -46,6 +46,8 @@ body {
 
 .list-item {
   max-width: 90%;
+  width: fit-content !important;
+  gap: 10px;
   background-color: rgb(240, 240, 240);
   border-radius: 20px;
 }
