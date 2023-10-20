@@ -60,7 +60,7 @@ const localBotProvider = () => {
 
 export const chatApi = createApi({
   reducerPath: "chatApi",
-  baseQuery: remoteBotProvider(),
+  baseQuery: localBotProvider(),
   endpoints: (builder) => ({
     getCompletion: builder.query<BotRawResponse, BotQuery>({
       queryFn(data, api, options, baseQuery) {

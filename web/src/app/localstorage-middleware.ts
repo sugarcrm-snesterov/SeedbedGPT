@@ -28,7 +28,5 @@ export const preloadState = () => {
     }
   }
 
-  return {
-    settings: jsonData,
-  }
+  return jsonData ? { settings: jsonData } : {}
 }
