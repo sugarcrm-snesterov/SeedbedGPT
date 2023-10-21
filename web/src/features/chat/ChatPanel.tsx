@@ -9,6 +9,7 @@ import { responseToDialogItem } from "./utills"
 import { useAppSelector, useAppDispatch } from "../../app/hooks"
 import { addDialogItem, selectDialog, setDialog } from "./chat-slice"
 import type { OpenAI } from "openai"
+import CircularProgress from "@mui/material/CircularProgress"
 
 export type DialogItem = {
   text: string
@@ -18,7 +19,7 @@ export type DialogItem = {
 
 function ChatPanel() {
   const dispatch = useAppDispatch()
-  const [triggerPrompt] = useLazyGetCompletionQuery()
+  const [triggerPrompt, query] = useLazyGetCompletionQuery()
   const dialog = useAppSelector(selectDialog)
   const [userInput, setUserInput] = useState("")
 
@@ -52,6 +53,7 @@ function ChatPanel() {
     })
     // if the history should be included we must include it after the request to prevent duplications
     dispatch(addDialogItem([{ text: value, type: "q" }]))
+
     const response = await loading
     const answerItems = responseToDialogItem(response.data)
 
@@ -70,6 +72,7 @@ function ChatPanel() {
     <Box className="chat-panel">
       <List className="chat-list" emptyText="Start a new conversation">
         {listItems}
+        {query.isFetching && <CircularProgress />}
       </List>
       <ChatInput
         onSubmit={makePrompt}
