@@ -8,10 +8,15 @@ type ListProps = React.PropsWithChildren<{
   emptyText?: string
 }>
 
-export default function List(props: ListProps) {
-  const hasChildren = Children.count(props.children) > 0
+const hasChildren = (children: React.ReactNode): boolean => {
+  return Children.toArray(children).reduce(
+    (empty, child) => empty || Boolean(child),
+    false,
+  )
+}
 
-  const children = hasChildren ? (
+export default function List(props: ListProps) {
+  const children = hasChildren(props.children) ? (
     props.children
   ) : (
     <ListItem sx={{ height: "90%", justifyContent: "center", fontSize: 40 }}>

@@ -68,11 +68,13 @@ function ChatPanel() {
     }
   })
 
+  const Loading = query.isFetching ? <CircularProgress /> : null
+
   return (
     <Box className="chat-panel">
       <List className="chat-list" emptyText="Start a new conversation">
         {listItems}
-        {query.isFetching && <CircularProgress />}
+        {Loading}
       </List>
       <ChatInput
         onSubmit={makePrompt}
