@@ -76,7 +76,7 @@ function SettingsPanel() {
         autoComplete="off"
         label="System Role"
         multiline={true}
-        rows={3}
+        rows={8}
         value={systemRole}
         onChange={onChange}
       />
@@ -119,7 +119,7 @@ function SettingsPanel() {
             name="includeHistory"
           />
         }
-        label="Include dialog history"
+        label="Attach a dialog history to prompts"
       />
       <Button variant="outlined" onClick={() => onResetClick()}>
         Reset to defaults
