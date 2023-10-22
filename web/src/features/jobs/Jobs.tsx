@@ -4,6 +4,7 @@ import Table from "@mui/material/Table"
 import TableBody from "@mui/material/TableBody"
 import TableCell from "@mui/material/TableCell"
 import Box from "@mui/material/Box"
+import Typography from "@mui/material/Typography"
 import TableContainer from "@mui/material/TableContainer"
 import TableHead from "@mui/material/TableHead"
 import TableRow from "@mui/material/TableRow"
@@ -48,8 +49,15 @@ function JobsPanel() {
         direction="row"
         style={{ justifyContent: "space-between" }}
       >
+        <Button variant="text">
+          <Link
+            to="../job/create"
+            style={{ color: "inherit", textDecoration: "inherit" }}
+          >
+            Create job
+          </Link>
+        </Button>
         <CircularProgress size={18} style={{ opacity: isFetching ? 1 : 0 }} />
-        <Link to="../job/create">Create job</Link>
       </Stack>
       <br />
       <TableContainer component={Paper}>

@@ -19,8 +19,9 @@ body {
   max-width: 1024px;
 }
 
-.app {
+.app.app {
   height: 100vh;
+  padding: 0;
   row-gap: 14px;
   display: flex !important;
   flex-direction: column;
