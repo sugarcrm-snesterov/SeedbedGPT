@@ -6,7 +6,7 @@
     "type": "module",
     "scripts": {
         "start-server": "node ./index.js",
-        "dev": "nodemon --exec node --loader ts-node-esm ./index.ts",
+        "dev": "nodemon --exec ts-node-esm ./index.ts",
         "start": "nodemon --exec node --loader ts-node-esm ./index.ts"
     },
     "author": "",
