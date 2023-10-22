@@ -3,11 +3,14 @@ import chatSettingsReducer from "../features/settings/settings-slice"
 import chatReducer from "../features/chat/chat-slice"
 import { chatApi } from "../features/chat/chat-api"
 import { localStorageMiddleware, preloadState } from "./localstorage-middleware"
+import { baseApi } from "../api/api"
 
 export const store = configureStore({
+  devTools: true,
   reducer: {
     chat: chatReducer,
     settings: chatSettingsReducer,
+    [baseApi.reducerPath]: baseApi.reducer,
     [chatApi.reducerPath]: chatApi.reducer,
   },
   preloadedState: preloadState(),
@@ -16,6 +19,7 @@ export const store = configureStore({
       ...getDefaultMiddleware(),
       localStorageMiddleware.middleware,
       chatApi.middleware,
+      baseApi.middleware,
     ]
   },
 })
