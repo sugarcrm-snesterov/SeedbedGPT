@@ -19,16 +19,24 @@ export const NewJob = () => {
   return (
     <Box>
       <Stack spacing={5} padding={2}>
-        <Typography
-          variant="h6"
-          component="div"
+        <Stack
           display="flex"
           flexDirection="row"
           justifyContent="space-between"
         >
-          <Link to="../jobs">Back</Link>
-          Create a fine tuning job
-        </Typography>
+          <Button variant="text">
+            <Link
+              to="../jobs"
+              style={{ color: "inherit", textDecoration: "inherit" }}
+            >
+              Back
+            </Link>
+          </Button>
+          <Typography variant="h6" component="div">
+            Create a fine tuning job
+          </Typography>
+        </Stack>
+
         <FormControl sx={{ m: 1, minWidth: 120 }} fullWidth>
           <InputLabel htmlFor="training_files">Training file</InputLabel>
           <Select
@@ -44,6 +52,7 @@ export const NewJob = () => {
               : data?.map((file) => <option value={file}>{file}</option>)}
           </Select>
         </FormControl>
+
         <FormControl sx={{ m: 1, minWidth: 120 }} fullWidth>
           <InputLabel htmlFor="suffix">Suffix</InputLabel>
           <Input
@@ -52,17 +61,31 @@ export const NewJob = () => {
             onChange={(e) => setSuffix(e.target.value)}
           />
         </FormControl>
-        <Link
-          to="../jobs"
-          onClick={() =>
-            startJob({
-              suffix,
-              trainingFile,
-            })
-          }
+
+        <Button
+          variant="outlined"
+          style={{
+            width: "300px",
+            marginLeft: "auto",
+            marginRight: "auto",
+          }}
         >
-          Create job
-        </Link>
+          <Link
+            to="../jobs"
+            onClick={() =>
+              startJob({
+                suffix,
+                trainingFile,
+              })
+            }
+            style={{
+              color: "inherit",
+              textDecoration: "inherit",
+            }}
+          >
+            Create job
+          </Link>
+        </Button>
       </Stack>
     </Box>
   )

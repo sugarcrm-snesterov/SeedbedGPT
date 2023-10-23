@@ -1,4 +1,4 @@
-import { Routes, Route, Outlet, Link } from "react-router-dom"
+import { Routes, Route, Outlet, NavLink } from "react-router-dom"
 import { useState } from "react"
 
 import Container from "@mui/material/Container"
@@ -97,7 +97,15 @@ const Layout = () => {
                 {PAGES.map((page) => (
                   <MenuItem key={page} onClick={handleCloseNavMenu}>
                     <Typography textAlign="center">
-                      <Link to={page}>{page}</Link>
+                      <NavLink
+                        to={page}
+                        className={({ isActive, isPending }) =>
+                          isPending ? "pending" : isActive ? "active" : ""
+                        }
+                        style={{ color: "inherit", textDecoration: "inherit" }}
+                      >
+                        {page}
+                      </NavLink>
                     </Typography>
                   </MenuItem>
                 ))}
@@ -111,7 +119,15 @@ const Layout = () => {
                   onClick={handleCloseNavMenu}
                   sx={{ my: 2, color: "white", display: "block" }}
                 >
-                  <Link to={page}>{page}</Link>
+                  <NavLink
+                    to={page}
+                    className={({ isActive, isPending }) =>
+                      isPending ? "pending" : isActive ? "active" : ""
+                    }
+                    style={{ color: "inherit", textDecoration: "inherit" }}
+                  >
+                    {page}
+                  </NavLink>
                 </Button>
               ))}
             </Box>
@@ -122,7 +138,9 @@ const Layout = () => {
       {/* An <Outlet> renders whatever child route is currently active,
         so you can think about this <Outlet> as a placeholder for
         the child routes we defined above. */}
-      <Outlet />
+      <Container style={{ height: "100%" }}>
+        <Outlet />
+      </Container>
     </Container>
   )
 }

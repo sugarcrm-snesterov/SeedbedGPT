@@ -5,6 +5,7 @@ import {
   Paper,
   Grid,
   List,
+  Button,
   ListItem,
   ListItemText,
   CircularProgress,
@@ -26,7 +27,14 @@ export const Job = () => {
   return (
     <Container maxWidth="lg">
       <Stack spacing={2} flexDirection="row">
-        <Link to={"../jobs"}>Back</Link>
+        <Button variant="text">
+          <Link
+            to={"../jobs"}
+            style={{ color: "inherit", textDecoration: "inherit" }}
+          >
+            Back
+          </Link>
+        </Button>
       </Stack>
       {isLoading ? (
         <CircularProgress />
